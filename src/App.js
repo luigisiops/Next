@@ -32,11 +32,6 @@ const App = () => {
     })
   }
 
-  const setEvent = (event) => {
-    setEvents([
-      ...events, event
-    ])
-  }
   console.log(fields)
   
   const DisplayEvent = (event) => {
@@ -56,6 +51,10 @@ const App = () => {
 
   const handleAddEvent = () => {
     setNewEvent(true)
+    setEvents([
+      ...events,
+      fields
+    ])
   }
 
   return (

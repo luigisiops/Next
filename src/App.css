@@ -1,9 +1,18 @@
 html{
-  margin: 0px
+  margin: 0px;
+  background: black
 }
+.calendar {
+  width: 62%;
+  height: 94vh;
+  background: white
 
+}
 .calendar rbc-calendar{
   z-index:-1;
+  height: 94vh;
+  margin: 0px;
+  padding: 0px;
 }
   .rbc-date-cell{
     z-index: -1;
@@ -27,6 +36,11 @@ html{
   
 }
 
+.timer-container {
+  height: 6vh;
+  background: rgb(12 36 45);
+}
+
 .content{ 
   background-color: rgba(48, 47, 47, 0.64);
   font-size: 1rem;
@@ -39,9 +53,9 @@ html{
   border: 1px solid black;
   box-shadow: 
   -2rem 2rem 2rem rgba(black, 0.2);
-filter: blur(0);
-transform: scale(1);  
-visibility: visible;
+  filter: blur(0);
+  transform: scale(1);  
+  visibility: visible;
 }
 
 
@@ -59,8 +73,84 @@ visibility: visible;
   border: 1px solid black;
   box-shadow: 
   -2rem 2rem 2rem rgba(black, 0.2);
-filter: blur(0);
-transform: scale(1);  
-visibility: visible;
+  filter: blur(0);
+  transform: scale(1);  
+  visibility: visible;
 
+}
+.content-container{
+display: flex;
+width:100vw;
+}
+
+.sidebar{
+  height: 94vh;
+  width:15%;
+  background: rgb(12 36 45);
+}
+
+.chatroom-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 94vh;
+  width:23%;
+  background: rgb(12 36 45);
+}
+
+.room-title{
+  border-top: 1px solid rgba(218, 218, 218, 0.685) ;
+  text-align: center;
+  font-size: 25px;
+  font-weight: 700;
+  color: white;
+  padding: 22px;
+  border-bottom:1px solid rgba(218, 218, 218, 0.685);
+  margin-bottom: 10px;
+}
+/*background:  rgba(29, 64, 77, 0.733);*/
+
+.chatlogs {
+  height: 72%;
+  width: 80%;
+  border-radius:10px;
+  background:  rgba(29, 64, 77, 0.733);
+  margin-bottom: 10px;
+}
+
+.message-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: white;
+}
+
+.message-body{
+  color: white;
+  font-size: 14px;
+  height: 35px;
+  width: 75%;
+  background: rgba(255, 255, 255, 0.308);
+  border-radius:10px;
+}
+.button-container{
+  display: flex;
+  width: 75%;
+  justify-content: flex-end;
+}
+.button-all{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  align-items: center;
+  font-size: 14px;
+  padding: 5px;
+  color: white;
+  height: 28px;
+  width: 50px;
+  background: transparent;
+  border: 1px solid rgba(218, 218, 218, 0.685);
+  border-radius: 3px;
 }

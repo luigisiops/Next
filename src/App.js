@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import Timer from 'react-compound-timer'
 import moment from 'moment'
@@ -9,13 +9,7 @@ import myEventsList from './eventsList'
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-
-const Modal = () => {
-  console.log('jdkfjsakfdahsjk')
-  return (
-    <div>Hello deez nuts</div>
-  )
-}
+import io from "socket.io-client"
 
 const App = () => {
   const localizer = momentLocalizer(moment)
@@ -25,15 +19,52 @@ const App = () => {
   const [newEvent, setNewEvent] = useState(false)
   const [fields, setFields] = useState({})
 
+  const [yourId, setYourId] = useState();
+  const [messages, setMessages] = useState([])
+  const [messageBody, setMessageBody] = useState("")
+
+  const socket = io.connect('http://localhost:8000')
+  //const socketServer = "http://localhost:8000"
+/*
+  useEffect(() => {
+    socketRef.current = socketIOClient(socketServer)
+
+    socketRef.current.on("your Id", id => {
+      setYourId(id)
+    })
+
+    socketRef.current.on("message", (message) => {
+      receivedMessage(message)
+    })
+
+  }, [])
+
+  const receivedMessage = (message) => {
+    setMessages(oldMessages => [...oldMessages, message])
+  }
+
+  const sendMessage = (e) => {
+    e.preventDefault()
+
+    const messageObject = {
+      body: messageBody,
+      id: yourId
+    }
+
+  setMessageBody("")
+  socketRef.current.emit("send message", messageObject)
+  }
+
+  */
   const setField = (evt) => {
     setFields({
-      ...fields, 
-      [evt.target.name] : evt.target.value
+      ...fields,
+      [evt.target.name]: evt.target.value
     })
   }
 
   console.log(fields)
-  
+
   const DisplayEvent = (event) => {
     setSelect(false)
     setShowModal(true)
@@ -43,85 +74,102 @@ const App = () => {
   const handleSelect = ({ fields, start, end }) => {
     setNewEvent(true)
     setFields({
-      ...fields, 
+      ...fields,
       "start": start,
       "end": end
     })
   }
 
   const handleAddEvent = () => {
-    setNewEvent(true)
     setEvents([
       ...events,
       fields
     ])
+    setNewEvent(false)
+
   }
 
   return (
     <div className="App">
       <div>
-        <div>
+        <div className = "timer-container">
           <Timer
             initialTime={1800000}
             direction="backward"
           >
-            <Timer.Days /> days
-            <Timer.Hours /> hours
-            <Timer.Minutes /> minutes
-            <Timer.Seconds /> seconds
+            <Timer.Hours />:Hrs 
+            <Timer.Minutes />:Mins
+            <Timer.Seconds />:Secs
           </Timer>
         </div>
-        <div>
-          
+
+        <div className = "content-container">
+
+        <div className = "sidebar">
+
         </div>
+
         <Calendar
-          className = "calendar"
+          className="calendar"
           selectable={select}
-          defaultView = {'week'}
+          defaultView={'week'}
           localizer={localizer}
           events={events}
-          style={{ height: 700 }}
+          style={{ height: `94vh` }}
           step={60}
           onSelectEvent={event => { DisplayEvent(event) }}
           onSelectSlot={handleSelect}
         />
+
+        <div className = "chatroom-container">
+          <div className = "room-title"> BIOCHEM STUDY GROUP</div>
+          <div className = "chatlogs"></div>
+          <div className = "message-container">
+            <input className = "message-body"></input>
+            <div className = "button-container">
+              <button className = "button-all" >Send</button>
+            </div>
+          </div>
+        </div>
+
+        </div>
+        
+        
       </div>
 
       {newEvent === true ? (
         <div className="modal">
           <div className="input-content">
-          
+            <button onClick={() => { setNewEvent(false) }}>Close</button>
 
-          <h2>Event Window</h2>
+            <h2>Event Window</h2>
 
             <label>Title:</label>
-            <input 
-            className="form-input mt-1 block w-full"
-            name="title"
+            <input
+              className="form-input mt-1 block w-full"
+              name="title"
               type="text"
               value={fields.title}
               onChange={setField}>
-              </input>
+            </input>
 
-              <label>Description: </label>
-              <textarea name="description"
+            <label>Description: </label>
+            <textarea name="description"
               type="text"
               rows="5" cols="50"
               value={fields.description}
               onChange={setField}>
-              </textarea>
+            </textarea>
 
-              <input 
-            name="title"
+            <input
+              name="title"
               type="checkbox"
               value={fields.title}
               onChange={setField}>
-              </input>
-              <button onClick = {handleAddEvent}>Add To Calendar</button>
+            </input>
+            <button onClick={handleAddEvent}>Add To Calendar</button>
 
-
-
-            </div>
+          </div>
           <div className="actions">
             <button className="toggle-button">OK</button>
           </div>
@@ -132,10 +180,10 @@ const App = () => {
 
       {showModal === true ? (
         <div className="modal">
-        <i className="far fa-times-circle"></i>
           <div className="content">
-          
-          <h2>Modal Window</h2>
+            <button onClick={() => { setShowModal(false) }}>Close</button>
+
+            <h2>Modal Window</h2>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis deserunt corrupti, ut fugit magni qui quasi nisi amet repellendus non fuga omnis a sed impedit explicabo accusantium nihil doloremque consequuntur.
             </div>
           <div className="actions">

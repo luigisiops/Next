@@ -104,22 +104,25 @@ const App = () => {
         </div>
 
         <div className = "content-container">
+        <div className="calendar-members-container">
+          <Calendar
+            className="calendar"
+            selectable={select}
+            defaultView={'week'}
+            localizer={localizer}
+            events={events}
+            style={{ height: `70vh` }}
+            step={60}
+            onSelectEvent={event => { DisplayEvent(event) }}
+            onSelectSlot={handleSelect}
+          />
 
-        <div className = "sidebar">
+          <div className = "members-container">
+            <div className = "members"></div>
+          </div>
 
         </div>
-
-        <Calendar
-          className="calendar"
-          selectable={select}
-          defaultView={'week'}
-          localizer={localizer}
-          events={events}
-          style={{ height: `94vh` }}
-          step={60}
-          onSelectEvent={event => { DisplayEvent(event) }}
-          onSelectSlot={handleSelect}
-        />
+       
 
         <div className = "chatroom-container">
           <div className = "room-title"> BIOCHEM STUDY GROUP</div>

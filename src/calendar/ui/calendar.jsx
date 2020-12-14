@@ -10,8 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import io from "socket.io-client"
+import GetCalendarEvents from '../use-cases/getEvents'
 
-export const MainPage = () => {
+export const MainPage = ({getCalendarEvents}) => {
   const localizer = momentLocalizer(moment)
   const [events, setEvents] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -205,7 +206,7 @@ const mapStateToProps = (state, { }) => ({
  })
  
  const mapDispatchToProps = (dispatch) => ({
-    //updateUserStatus: UpdateUserStatus(dispatch)
+    getCalendarEvents: GetCalendarEvents(dispatch)
  })
  
 export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

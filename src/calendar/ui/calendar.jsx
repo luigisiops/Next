@@ -12,19 +12,19 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import io from "socket.io-client"
 import {GetCalendarEvents} from '../use-cases/getEvents'
 import {AddCalendarEvent} from '../use-cases/addEvent'
+import {DeleteCalendarEvent} from '../use-cases/deleteEvent'
 
-export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
+
+export const MainPage = ({getCalendarEvents, addCalendarEvent, deleteCalendarEvent, event}) => {
   const localizer = momentLocalizer(moment)
   const [events, setEvents] = useState([])
 
-  let test = new Date("2020-12-16T03:43:53.693Z")
-  let test2 = new Date(2016, 2, 20, 0, 0, 0)
-  console.log(test)
-  console.log(test2)
   const [showModal, setShowModal] = useState(false)
   const [select, setSelect] = useState(true)
   const [newEvent, setNewEvent] = useState(false)
   const [fields, setFields] = useState({})
+  const [modalContent, setModalContent] = useState({})
+  const [timer, setTimer] = useState(false)
 
   const [yourId, setYourId] = useState();
   const [messages, setMessages] = useState([])
@@ -80,7 +80,12 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
   const DisplayEvent = (event) => {
     setSelect(false)
     setShowModal(true)
-    console.log(showModal)
+    setModalContent({
+        id: event.id,
+        title: event.title,
+        description: event.description
+    })
+    
   }
 
   const handleSelect = ({ fields, start, end }) => {
@@ -96,14 +101,29 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
     <div className="App">
       <div>
         <div className = "timer-container">
+        <div>Study Timer</div>
           <Timer
-            initialTime={1800000}
+            initialTime={3600000}
             direction="backward"
+            startImmediately = {false}
           >
-            <Timer.Hours />:Hrs 
-            <Timer.Minutes />:Mins
-            <Timer.Seconds />:Secs
-          </Timer>
+
+          {({ start, pause, reset, getTimerState, getTime }) => (
+        <div>
+            <div>
+                <Timer.Hours /> hours {" "}
+                <Timer.Minutes /> minutes{" "}
+                <Timer.Seconds /> seconds
+            </div>
+            <br />
+            <div>
+                <button onClick={start}>Start</button>
+                <button onClick={pause}>Pause</button>
+                <button onClick={reset}>Reset</button>
+            </div>
+        </div>
+    )}
+</Timer>
         </div>
 
         <div className = "content-container">
@@ -122,7 +142,11 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
             localizer={localizer}
             events={event.events}
             step={60}
-            onSelectEvent={event => { DisplayEvent(event) }}
+            onSelectEvent={event => {
+                DisplayEvent(event) 
+                console.log(event)
+                
+                }}
             onSelectSlot={handleSelect}
           />
 
@@ -134,7 +158,6 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
         
         } 
 
-       
 
         <div className = "chatroom-container">
           <div className = "room-title"> BIOCHEM STUDY GROUP</div>
@@ -155,13 +178,13 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
       {newEvent === true ? (
         <div className="modal">
           <div className="input-content">
-            <button onClick={() => { setNewEvent(false) }}>Close</button>
+            <button className = "close-button"onClick={() => { setNewEvent(false) }}>Close</button>
 
             <h2>Event Window</h2>
 
             <label>Title:</label>
             <input
-              className="form-input mt-1 block w-full"
+              className="form-inputs"
               name="title"
               type="text"
               value={fields.title}
@@ -169,26 +192,23 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
             </input>
 
             <label>Description: </label>
-            <textarea name="description"
+            <textarea 
+            className = "form-textbox"
+            name="description"
               type="text"
               rows="5" cols="50"
               value={fields.description}
               onChange={setField}>
             </textarea>
 
-            <input
-              name="title"
-              type="checkbox"
-              value={fields.title}
-              onChange={setField}>
-            </input>
             <button onClick={() => {
                 {addCalendarEvent(fields)}
-                setNewEvent(false)}}>Add To Calendar</button>
+                setNewEvent(false)
+                setFields({})
+                }}>Add To Calendar</button>
 
           </div>
           <div className="actions">
-            <button className="toggle-button">OK</button>
           </div>
         </div>
       ) : (
@@ -198,10 +218,19 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
       {showModal === true ? (
         <div className="modal">
           <div className="content">
-            <button onClick={() => { setShowModal(false) }}>Close</button>
+            <button onClick={() => {
+                {setShowModal(false)}
+                setSelect(true)
+                }}>Close
+            </button>
+            <button onClick = {()=>{
+                {deleteCalendarEvent(calendarId, modalContent.id)}
+                setShowModal(false)
+                setSelect(true)
+                }}>X</button>
 
-            <h2>Modal Window</h2>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis deserunt corrupti, ut fugit magni qui quasi nisi amet repellendus non fuga omnis a sed impedit explicabo accusantium nihil doloremque consequuntur.
+            <div className = "modal-title">{modalContent.title}</div>
+            Description: {modalContent.description}
             </div>
           <div className="actions">
             <button className="toggle-button">OK</button>
@@ -222,6 +251,7 @@ const mapStateToProps = (state, { }) => ({
  const mapDispatchToProps = (dispatch) => ({
     getCalendarEvents: GetCalendarEvents(dispatch),
     addCalendarEvent: AddCalendarEvent(dispatch),
+    deleteCalendarEvent: DeleteCalendarEvent(dispatch)
  })
  
 export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

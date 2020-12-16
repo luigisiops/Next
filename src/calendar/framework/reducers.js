@@ -31,8 +31,11 @@ export const events = createReducer(
             state.events = [...state.events, event]
         },
 
-        [onDeleteEvent.type]: (state, {payload: event}) => {
-
+        [onDeleteEvent.type]: (state, {payload: events}) => {
+            if (events === null){
+                return state
+            }
+            state.events = events
         },
 
         [onUpdateEvent.type]: (state, {payload: event}) => {

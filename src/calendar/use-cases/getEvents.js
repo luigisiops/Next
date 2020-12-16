@@ -7,7 +7,7 @@ export const GetCalendarEvents = (dispatch) => async(
     console.log('djfhkaf')
     console.log(calendarId)
 
-    const response = await fetch(`http://localhost:8000/calendar/${calendar.id}/events`, {
+    const response = await fetch(`https://guarded-ridge-20087.herokuapp.com/calendar/${calendar.id}/events`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

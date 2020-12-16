@@ -1,7 +1,10 @@
 import { createReducer } from "@reduxjs/toolkit"
 
 import {
-    onGetEvents
+    onGetEvents,
+    onAddEvent,
+    onDeleteEvent,
+    onUpdateEvent
 } from "./actions"
 
 
@@ -19,7 +22,22 @@ export const events = createReducer(
             }
 
             state.events = events
-        }
+        },
+
+        [onAddEvent.type]: (state, {payload: event}) => {
+            if (events === null){
+                return state
+            }
+            state.events = [...state.events, event]
+        },
+
+        [onDeleteEvent.type]: (state, {payload: event}) => {
+
+        },
+
+        [onUpdateEvent.type]: (state, {payload: event}) => {
+
+        },
 
     }
 )

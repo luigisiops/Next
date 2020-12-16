@@ -1,13 +1,13 @@
 import {onGetEvents} from '../framework/actions'
 
 export const GetCalendarEvents = (dispatch) => async(
-    events
+    calendarId
 ) => {
-    const calendarId = {id: 'calendar'}
+    const calendar = {id: calendarId}
     console.log('djfhkaf')
     console.log(calendarId)
 
-    const response = await fetch(`https://localhost:8000/${calendarId.id}`, {
+    const response = await fetch(`http://localhost:8000/calendar/${calendar.id}/events`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -15,8 +15,22 @@ export const GetCalendarEvents = (dispatch) => async(
     })
 
     let calendarEvents = await response.json()
+    let adjustedEvents = []
+    calendarEvents.forEach((item) => {
+        let fixed = {
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            start: new Date(item.start),
+            end: new Date(item.end),
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt, 
+        }
+        adjustedEvents.push(fixed)
+    })
+    console.log(adjustedEvents)
     
-    return dispatch(onGetEvents(calendarEvents))
+    return dispatch(onGetEvents(adjustedEvents))
 }
 
 export default GetCalendarEvents

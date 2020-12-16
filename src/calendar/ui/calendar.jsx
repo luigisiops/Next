@@ -11,10 +11,16 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import io from "socket.io-client"
 import {GetCalendarEvents} from '../use-cases/getEvents'
+import {AddCalendarEvent} from '../use-cases/addEvent'
 
-export const MainPage = ({getCalendarEvents}) => {
+export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
   const localizer = momentLocalizer(moment)
   const [events, setEvents] = useState([])
+
+  let test = new Date("2020-12-16T03:43:53.693Z")
+  let test2 = new Date(2016, 2, 20, 0, 0, 0)
+  console.log(test)
+  console.log(test2)
   const [showModal, setShowModal] = useState(false)
   const [select, setSelect] = useState(true)
   const [newEvent, setNewEvent] = useState(false)
@@ -23,8 +29,12 @@ export const MainPage = ({getCalendarEvents}) => {
   const [yourId, setYourId] = useState();
   const [messages, setMessages] = useState([])
   const [messageBody, setMessageBody] = useState("")
+  const calendarId = 2
+  useEffect(() => {
+    getCalendarEvents(calendarId)
+  },[])
 
-  const socket = io.connect('http://localhost:8000')
+  //const socket = io.connect('http://localhost:8000')
   //const socketServer = "http://localhost:8000"
 /*
   useEffect(() => {
@@ -65,6 +75,7 @@ export const MainPage = ({getCalendarEvents}) => {
   }
 
   console.log(fields)
+  console.log(event)
 
   const DisplayEvent = (event) => {
     setSelect(false)
@@ -105,14 +116,20 @@ export const MainPage = ({getCalendarEvents}) => {
         </div>
 
         <div className = "content-container">
-        <div className="calendar-members-container">
+        {(events.events === null) ? 
+            <button type="button" class="bg-rose-600 ..." disabled>
+            <svg class="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+            </svg>
+            Processing
+            </button>
+            :
+            <div className="calendar-members-container">
           <Calendar
             className="calendar"
             selectable={select}
             defaultView={'week'}
             localizer={localizer}
-            events={events}
-            style={{ height: `70vh` }}
+            events={event.events}
             step={60}
             onSelectEvent={event => { DisplayEvent(event) }}
             onSelectSlot={handleSelect}
@@ -123,6 +140,9 @@ export const MainPage = ({getCalendarEvents}) => {
           </div>
 
         </div>
+        
+        } 
+
        
 
         <div className = "chatroom-container">
@@ -131,7 +151,7 @@ export const MainPage = ({getCalendarEvents}) => {
           <div className = "message-container">
             <input className = "message-body"></input>
             <div className = "button-container">
-              <button className = "button-all" >Send</button>
+              <button className = "button-all">Send</button>
             </div>
           </div>
         </div>
@@ -171,7 +191,7 @@ export const MainPage = ({getCalendarEvents}) => {
               value={fields.title}
               onChange={setField}>
             </input>
-            <button onClick={handleAddEvent}>Add To Calendar</button>
+            <button onClick={()=> {addCalendarEvent(fields)}}>Add To Calendar</button>
 
           </div>
           <div className="actions">
@@ -203,10 +223,12 @@ export const MainPage = ({getCalendarEvents}) => {
 
 const mapStateToProps = (state, { }) => ({
     //user: state.user
+    event: state.events
  })
  
  const mapDispatchToProps = (dispatch) => ({
-    getCalendarEvents: GetCalendarEvents(dispatch)
+    getCalendarEvents: GetCalendarEvents(dispatch),
+    addCalendarEvent: AddCalendarEvent(dispatch),
  })
  
 export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

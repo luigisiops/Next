@@ -15,7 +15,7 @@ export const AddCalendarEvent = (dispatch) => async(
 
     }
 
-    const response = await fetch(`https://guarded-ridge-20087.herokuapp.com/calendar/2/events`, {
+    const response = await fetch(`http://localhost:8000/calendar/2/events`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

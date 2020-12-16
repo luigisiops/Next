@@ -5,7 +5,7 @@ export const DeleteCalendarEvent = (dispatch) => async(
 ) => {
     const event = {id: eventId, calendarId: calendarId}
 
-    const response = await fetch(`https://guarded-ridge-20087.herokuapp.com/calendar/${event.calendarId}/events/${event.id}`, {
+    const response = await fetch(`http://localhost:8000/calendar/${event.calendarId}/events/${event.id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'

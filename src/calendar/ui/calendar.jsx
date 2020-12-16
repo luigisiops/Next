@@ -92,15 +92,6 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
     })
   }
 
-  const handleAddEvent = () => {
-    setEvents([
-      ...events,
-      fields
-    ])
-    setNewEvent(false)
-
-  }
-
   return (
     <div className="App">
       <div>
@@ -191,7 +182,9 @@ export const MainPage = ({getCalendarEvents, addCalendarEvent, event}) => {
               value={fields.title}
               onChange={setField}>
             </input>
-            <button onClick={()=> {addCalendarEvent(fields)}}>Add To Calendar</button>
+            <button onClick={() => {
+                {addCalendarEvent(fields)}
+                setNewEvent(false)}}>Add To Calendar</button>
 
           </div>
           <div className="actions">
